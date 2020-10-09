@@ -1,11 +1,14 @@
+# require_relative 'web_steps.rb'
+
 # Add a declarative step here for populating the DB with movies.
 
 Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
+      Movie.create!(movie)
   end
-  fail "Unimplemented"
+  
 end
 
 Then /(.*) seed movies should exist/ do | n_seeds |
@@ -25,14 +28,31 @@ end
 #  "When I uncheck the following ratings: PG, G, R"
 #  "When I check the following ratings: G"
 
-When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
+When /I (un)?check the following ratings: (".*" *)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
-  fail "Unimplemented"
+  rating_list.split(" ").each { |rating| 
+     rating = "ratings_"+rating.split("\"")[1]
+     if (uncheck)
+         uncheck(rating)
+     else
+         check(rating)
+     end         
+  }
 end
 
+Then /I should( not)? see the following movies: (.*)/ do |should_not, movie_list|
+    movie_list.split(",").each { |movie| 
+        steps %Q{
+            Then I should#{should_not} see "#{movie}"
+        }
+  }
+end
+
+
+
 Then /I should see all the movies/ do
-  # Make sure that all the movies in the app are visible in the table
-  fail "Unimplemented"
+      # Make sure that all the movies in the app are visible in the table
+    fail "horribly"
 end
