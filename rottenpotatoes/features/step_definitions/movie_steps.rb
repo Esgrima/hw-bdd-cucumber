@@ -1,4 +1,4 @@
-# require_relative 'web_steps.rb'
+
 
 # Add a declarative step here for populating the DB with movies.
 
@@ -53,6 +53,11 @@ end
 
 
 Then /I should see all the movies/ do
-      # Make sure that all the movies in the app are visible in the table
-    fail "horribly"
+    # Make sure that all the movies in the app are visible in the table
+    Movie.find_each do |movie|
+        steps %Q{
+            Then I should see "#{movie.title}"
+        }
+    end
+    
 end
